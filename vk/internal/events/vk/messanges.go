@@ -10,6 +10,10 @@ const msgHelp = `
 const msgHello = "Hi there! 👾\n\n" + msgHelp
 
 const (
-	msgUnknownCommand = "Unknown command 🤔"
-	msgNoPosts        = "No posts found 🤷‍♂️"
+	msgUnknownCommand      = "Unknown command 🤔"
+	msgNoPosts             = "No posts found 🤷‍♂️"
+	msgAlreadySubscribed   = "You are already subscribed to the blog"
+	msgSubscribed          = "You are subscribed to the blog"
+	msgNotSubscribed       = "You are not subscribed to the blog"
+	msgUnsubscribedSuccess = "You are unsubscribed from the blog"
 )

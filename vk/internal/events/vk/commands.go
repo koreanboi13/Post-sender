@@ -2,13 +2,16 @@ package vk
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"strings"
 )
 
 const (
-	HelpCmd  = "/help"
-	StartCmd = "/start"
+	SubscribeCmd   = "/subscribe"
+	UnsubscribeCmd = "/unsubscribe"
+	HelpCmd        = "/help"
+	StartCmd       = "/start"
 )
 
 func (p *Processor) doCmd(ctx context.Context, text string, chatID int) error {
@@ -17,6 +20,10 @@ func (p *Processor) doCmd(ctx context.Context, text string, chatID int) error {
 	log.Printf("got new command '%s' from '%d", text, chatID)
 
 	switch text {
+	case SubscribeCmd:
+		return p.subscribe(ctx, chatID)
+	case UnsubscribeCmd:
+		return p.unsubscribe(ctx, chatID)
 	case HelpCmd:
 		return p.sendHelp(ctx, chatID)
 	case StartCmd:
@@ -24,6 +31,38 @@ func (p *Processor) doCmd(ctx context.Context, text string, chatID int) error {
 	default:
 		return p.vk.SendMessage(ctx, chatID, msgUnknownCommand)
 	}
+}
+
+func (p *Processor) subscribe(ctx context.Context, chatID int) error {
+	res, err := p.db.ChatExists(ctx, chatID)
+	if err != nil {
+		return fmt.Errorf("can't check if chat exists: %w", err)
+	}
+	if res {
+		return p.vk.SendMessage(ctx, chatID, msgAlreadySubscribed)
+	}
+
+	if err = p.db.SaveUser(ctx, chatID); err != nil {
+		return fmt.Errorf("can't save user: %w", err)
+	}
+	return p.vk.SendMessage(ctx, chatID, msgSubscribed)
+}
+
+func (p *Processor) unsubscribe(ctx context.Context, chatID int) error {
+	exists, err := p.db.ChatExists(ctx, chatID)
+	if err != nil {
+		return fmt.Errorf("can't check if chat exists: %w", err)
+	}
+
+	if !exists {
+		return p.vk.SendMessage(ctx, chatID, "You are already unsubscribed!")
+	}
+
+	if err := p.db.DeleteUser(ctx, chatID); err != nil {
+		return fmt.Errorf("can't unsubscribe: %w", err)
+	}
+
+	return p.vk.SendMessage(ctx, chatID, msgUnsubscribedSuccess)
 }
 
 func (p *Processor) sendHelp(ctx context.Context, chatID int) error {

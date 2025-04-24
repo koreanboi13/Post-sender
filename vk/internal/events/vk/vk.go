@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"vk/internal/clients/blogator"
+	"vk/internal/clients/db"
 	"vk/internal/clients/vk"
 	"vk/internal/events"
 )
@@ -13,6 +14,7 @@ import (
 type Processor struct {
 	vk   *vk.Client
 	ator *blogator.Client
+	db   *db.Client
 }
 
 type Meta struct {
@@ -25,10 +27,11 @@ var (
 	ErrUnknownMetaType  = errors.New("unknown meta type")
 )
 
-func New(client *vk.Client, blog *blogator.Client) *Processor {
+func New(client *vk.Client, blog *blogator.Client, db *db.Client) *Processor {
 	return &Processor{
 		vk:   client,
 		ator: blog,
+		db:   db,
 	}
 }
 

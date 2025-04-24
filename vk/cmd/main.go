@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"vk/internal/clients/blogator"
+	"vk/internal/clients/db"
 	vkClient "vk/internal/clients/vk"
 	"vk/internal/config"
 	event_consumer "vk/internal/consumer/event-consumer"
@@ -11,7 +12,11 @@ import (
 
 func main() {
 	cfg := config.MustLoad()
-	eventProccessor := vk.New(vkClient.New(cfg.VkToken), blogator.New(cfg.AtorToken))
+	eventProccessor := vk.New(
+		vkClient.New(cfg.VkToken),
+		blogator.New(cfg.AtorToken),
+		db.New(cfg.DbHost, cfg.DbPort),
+	)
 
 	log.Print("service started")
 
