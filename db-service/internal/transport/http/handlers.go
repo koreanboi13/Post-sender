@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"db/internal/service"
@@ -33,6 +34,7 @@ func (h *Handler) SaveChat(w http.ResponseWriter, r *http.Request) {
 		h.respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
+	log.Println("function SaveChat, req: ", req)
 	defer r.Body.Close()
 
 	var messengerType storage.MessengerType
@@ -48,11 +50,13 @@ func (h *Handler) SaveChat(w http.ResponseWriter, r *http.Request) {
 
 	if err := h.chatService.SaveChat(req.ID, messengerType); err != nil {
 		h.respondWithError(w, http.StatusInternalServerError, err.Error())
+		log.Println("Error while chat saving")
 		return
 	}
 
 	h.respondWithJSON(w, http.StatusOK, response{
 		Success: true,
+		Data:    false,
 	})
 }
 
@@ -100,7 +104,7 @@ func (h *Handler) GetChatsByMessenger(w http.ResponseWriter, r *http.Request) {
 		h.respondWithError(w, http.StatusBadRequest, "Invalid messenger type")
 		return
 	}
-
+	log.Println("functiom GetChatsByMessenger, messanger type: ", messengerType)
 	chatIDs, err := h.chatService.GetChatsByMessenger(messengerType)
 	if err != nil {
 		h.respondWithError(w, http.StatusInternalServerError, err.Error())

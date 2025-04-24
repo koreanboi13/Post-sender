@@ -8,8 +8,8 @@ type ErrorResponse struct {
 }
 
 type Response struct {
-	Success bool       `json:"success"`
-	Data    []DataItem `json:"data"`
+	Success bool  `json:"success"`
+	Data    []int `json:"data"`
 }
 
 type DataItem struct {

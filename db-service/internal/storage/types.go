@@ -3,8 +3,8 @@ package storage
 type MessengerType string
 
 const (
-	Telegram MessengerType = "telegram"
-	VK       MessengerType = "vk"
+	Telegram MessengerType = "Telegram"
+	VK       MessengerType = "Vk"
 )
 
 type ChatEntry struct {

@@ -7,7 +7,7 @@ type Storage interface {
 
 	Exists(chatID string) (bool, error)
 
-	GetAllByMessenger(messengerType MessengerType) ([]string, error)
+	GetAllByMessenger(messengerType MessengerType) ([]int, error)
 
 	Close() error
 }

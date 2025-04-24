@@ -113,7 +113,7 @@ func (c *Client) DeleteUser(ctx context.Context, chatId int) error {
 		return fmt.Errorf("can`t unmurshall json: %v", err)
 	}
 
-	if !success.Data {
+	if !success.Success {
 		return fmt.Errorf("error while deleting chatId: %v", success.Success)
 	}
 	return nil
@@ -152,13 +152,13 @@ func (c *Client) ChatExists(ctx context.Context, chatId int) (bool, error) {
 	return success.Data, nil
 }
 
-func (c *Client) AllUsers(ctx context.Context, messangerType string) ([]DataItem, error) {
+func (c *Client) AllUsers(ctx context.Context, messangerType string) ([]int, error) {
 	u := url.URL{
 		Scheme: "http",
 		Host:   c.Host,
 		Path:   path.Join(c.BasePath, methodAllChats, messangerType),
 	}
-
+	log.Println("making request to: ", u.String())
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
 	if err != nil {
 		return nil, fmt.Errorf("can`t make req: %v", err)

@@ -40,7 +40,7 @@ func (s *ChatService) ChatExists(chatID string) (bool, error) {
 	return s.storage.Exists(chatID)
 }
 
-func (s *ChatService) GetChatsByMessenger(messengerType storage.MessengerType) ([]string, error) {
+func (s *ChatService) GetChatsByMessenger(messengerType storage.MessengerType) ([]int, error) {
 	return s.storage.GetAllByMessenger(messengerType)
 }
 

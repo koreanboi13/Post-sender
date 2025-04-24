@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strconv"
 
 	sq "github.com/Masterminds/squirrel"
 	_ "github.com/lib/pq"
@@ -100,7 +101,7 @@ func (p *Postgres) Exists(chatID string) (bool, error) {
 	return true, nil
 }
 
-func (p *Postgres) GetAllByMessenger(messengerType MessengerType) ([]string, error) {
+func (p *Postgres) GetAllByMessenger(messengerType MessengerType) ([]int, error) {
 	query := p.psql.Select("id").
 		From("chat_entries").
 		Where(sq.Eq{"messenger": messengerType}).
@@ -124,8 +125,15 @@ func (p *Postgres) GetAllByMessenger(messengerType MessengerType) ([]string, err
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("error iterating over chat IDs: %w", err)
 	}
-
-	return chatIDs, nil
+	var Ids []int
+	for _, id := range chatIDs {
+		temp, err := strconv.Atoi(id)
+		if err != nil {
+			continue
+		}
+		Ids = append(Ids, temp)
+	}
+	return Ids, nil
 }
 
 func (p *Postgres) Close() error {
