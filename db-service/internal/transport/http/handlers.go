@@ -110,7 +110,7 @@ func (h *Handler) GetChatsByMessenger(w http.ResponseWriter, r *http.Request) {
 		h.respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-
+	log.Println("functiom GetChatsByMessenger, chatIDs: ", chatIDs)
 	h.respondWithJSON(w, http.StatusOK, response{
 		Success: true,
 		Data:    chatIDs,
