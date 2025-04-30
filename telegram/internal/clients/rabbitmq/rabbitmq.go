@@ -88,17 +88,17 @@ func (c *Client) Consume(ctx context.Context, handler func(post Response) error)
 				var post Response
 				if err := json.Unmarshal(d.Body, &post); err != nil {
 					log.Printf("Error unmarshaling message: %v", err)
-					d.Nack(false, false) // Reject message
+					d.Nack(false, false)
 					continue
 				}
 
 				if err := handler(post); err != nil {
 					log.Printf("Error handling message: %v", err)
-					d.Nack(false, true) // Requeue message
+					d.Nack(false, true)
 					continue
 				}
 
-				d.Ack(false) // Acknowledge message
+				d.Ack(false)
 			}
 		}
 	}()
@@ -106,15 +106,13 @@ func (c *Client) Consume(ctx context.Context, handler func(post Response) error)
 	return nil
 }
 
-// Stop останавливает потребителя и ждет завершения всех горутин
 func (c *Client) Stop() {
 	close(c.stopChan)
-	c.wg.Wait() // Ждем завершения всех горутин
+	c.wg.Wait()
 }
 
-// Close закрывает соединение с RabbitMQ
 func (c *Client) Close() error {
-	c.Stop() // Сначала останавливаем потребителя
+	c.Stop()
 
 	if err := c.ch.Close(); err != nil {
 		return fmt.Errorf("failed to close channel: %w", err)
