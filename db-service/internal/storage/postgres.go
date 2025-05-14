@@ -3,7 +3,6 @@ package storage
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"strconv"
 
 	sq "github.com/Masterminds/squirrel"
@@ -16,7 +15,6 @@ type Postgres struct {
 }
 
 func NewPostgres(connectionString string) (*Postgres, error) {
-	log.Println(connectionString)
 	db, err := sql.Open("postgres", connectionString)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
